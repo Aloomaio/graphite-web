@@ -3471,6 +3471,7 @@ SeriesFunctions = {
   'cumulative' : cumulative,
   'consolidateBy' : consolidateBy,
   'keepLastValue' : keepLastValue,
+  'fillGaps' : fillGaps,
   'changed' : changed,
   'drawAsInfinite' : drawAsInfinite,
   'secondYAxis': secondYAxis,
