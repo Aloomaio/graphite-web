@@ -437,6 +437,36 @@ def percentileOfSeries(requestContext, seriesList, n, interpolate=False):
 
   return [resultSeries]
 
+
+def fillGaps(requestContext, seriesList):
+    """
+    Fill gaps (Nones) in series. Before the first non-None value fills the first
+    non-None value. Afterwards, always fill the last non-None value.
+
+    """
+    for series in seriesList:
+        series.name = "fillGaps(%s)" % series.name
+        series.pathExpression = series.name
+        lastValue = None  # actually last non-None value
+        firstValueFound = False
+        for i, value in enumerate(series):
+            if not firstValueFound:
+                if value is None:  # still not found
+                    continue
+                # found a non-None value
+                firstValueFound = True
+                lastValue = value
+                # fill in missing first values
+                for j in range(i - 1):
+                    series[j] = value
+            else:  # first non null value already found
+                if value is None:
+                    series[i] = lastValue
+                else:
+                    lastValue = value
+        return seriesList
+
+
 def keepLastValue(requestContext, seriesList, limit = INF):
   """
   Takes one metric or a wildcard seriesList, and optionally a limit to the number of 'None' values to skip over.
