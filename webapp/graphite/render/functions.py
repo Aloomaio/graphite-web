@@ -464,7 +464,7 @@ def fillGaps(requestContext, seriesList):
                     series[i] = lastValue
                 else:
                     lastValue = value
-        return seriesList
+    return seriesList
 
 
 def keepLastValue(requestContext, seriesList, limit = INF):
