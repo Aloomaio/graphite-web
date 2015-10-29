@@ -457,7 +457,7 @@ def fillGaps(requestContext, seriesList):
                 firstValueFound = True
                 lastValue = value
                 # fill in missing first values
-                for j in range(i - 1):
+                for j in range(i):
                     series[j] = value
             else:  # first non null value already found
                 if value is None:
