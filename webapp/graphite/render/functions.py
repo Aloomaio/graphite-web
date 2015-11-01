@@ -442,7 +442,11 @@ def fillGaps(requestContext, seriesList):
     """
     Fill gaps (Nones) in series. Before the first non-None value fills the first
     non-None value. Afterwards, always fill the last non-None value.
-
+    For example:
+        - - - - 4 - - 5 - - - 3 - - -
+        will turn into:
+        4 4 4 4 4 4 4 5 5 5 5 3 3 3 3
+        (where - stands for None values)
     """
     for series in seriesList:
         series.name = "fillGaps(%s)" % series.name
