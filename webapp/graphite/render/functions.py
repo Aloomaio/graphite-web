@@ -438,6 +438,65 @@ def percentileOfSeries(requestContext, seriesList, n, interpolate=False):
   return [resultSeries]
 
 
+def fillFirstGap(requestContext, seriesList, default=0):
+  """
+  Takes a metric or wildcard seriesList and replaces null values with the value
+  specified by `default`, up until the first non-null value.  The value 0 used 
+  if not specified.
+  For example:
+      - - - - 4 - - 5 - - - 3 - - -
+      will turn into:
+      0 0 0 0 4 - - 5 - - - 3 - - -
+      (where - stands for None values)  
+  """
+  for series in seriesList:
+    series.name = "fillFirstGap(%s,%g)" % (series.name, default)
+    series.pathExpression = series.name
+    for i, value in enumerate(series):
+      if value is None:
+        series[i] = default
+      else:
+        break
+  return seriesList
+
+def fillInterimGaps(requestContext, seriesList):
+  """
+  Fill gaps (Nones) in series. Before the first non-None value fills the first
+  non-None value. Afterwards, always fill the last non-None value.
+  For example:
+      - - - - 4 - - 5 - - - 3 - - -
+      will turn into:
+      - - - - 4 4 4 5 5 5 5 3 - - -
+      (where - stands for None values)
+  """
+  for series in seriesList:
+    series.name = "fillInterimGaps(%s)" % (series.name)
+    series.pathExpression = series.name
+    firstValueFound = False
+    interimNullFound = False
+    lastValue = None  # actually last non-None value
+    start = 0
+    for i, value in enumerate(series): 
+      if not firstValueFound: # skip leading nulls
+        if value is None:
+          continue
+        # found a non-None value
+        firstValueFound = True
+        lastValue = value
+      else:
+        if value is None and not interimNullFound:
+          start = i
+          interimNullFound = True
+          continue
+        if value is not None:
+          if interimNullFound:
+            for j in range(start, i): # fill the gap
+              series[j] = lastValue
+          interimNullFound = False
+          lastValue = value
+
+  return seriesList
+
 def fillGaps(requestContext, seriesList):
     """
     Fill gaps (Nones) in series. Before the first non-None value fills the first
