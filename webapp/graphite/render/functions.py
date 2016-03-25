@@ -3534,6 +3534,8 @@ SeriesFunctions = {
   'cumulative' : cumulative,
   'consolidateBy' : consolidateBy,
   'keepLastValue' : keepLastValue,
+  'fillFirstGap' : fillFirstGap,
+  'fillInterimGaps' : fillInterimGaps,
   'fillGaps' : fillGaps,
   'changed' : changed,
   'drawAsInfinite' : drawAsInfinite,
